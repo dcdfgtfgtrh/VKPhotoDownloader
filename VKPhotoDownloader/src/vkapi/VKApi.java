@@ -17,6 +17,7 @@ public class VKApi
 {
     String       ACCES_TOKEN, login, password, client_id, display,
 	    redirect_uri, response_type, ip_h, to, scope, location, apiURI;
+    public int uid;
     HttpPost     post;
     HttpResponse response;
     boolean      isLoggedIn = false;
@@ -136,6 +137,7 @@ public class VKApi
 
 	location = response.getFirstHeader("location").getValue();
 	ACCES_TOKEN = location.split("#")[1].split("&")[0].split("=")[1];
+	uid = Integer.parseInt(location.split("#")[1].split("&")[2].split("=")[1]);
 	isLoggedIn = true;
 	return isLoggedIn;
     }

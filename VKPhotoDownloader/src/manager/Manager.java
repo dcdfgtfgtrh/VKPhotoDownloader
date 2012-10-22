@@ -10,125 +10,110 @@ import java.io.ObjectInputStream.GetField;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
+import org.json.me.JSONObject;
 
 import vkapi.ApiMethod;
+import vkapi.VKAlbum;
 import vkapi.VKApi;
 import vkapi.VKException;
 import vkapi.VKPhoto;
 
 public class Manager
 {
-    VKApi api;
-    String photosTotal;
-    
-    public Manager(String login,String pass)
+    public final VKApi api;
+
+    public Manager(String login, String pass)
     {
 	api = new VKApi(login, pass);
     }
- /*   public static void main(String... args) throws IOException
-    {
-	Manager manager = new Manager();
-	String token = manager.api.doLogin();
-	System.out.println("ACCESS_TOKEN=" + token);
-	ArrayList<VKPhoto> photos = manager.getAllPhotos();
-	
-	manager.savePhotosToDrive("download/", photos);
 
-    }
-*/
-    public ArrayList<VKPhoto> getAllPhotos() throws VKException
-    {
-	if (api.isLogged()!=true)
-	{
-	    try
-	    {
-		api.doLogin();
-	    } catch (IOException e)
-	    {
-		System.out.println("Internet?");
-		e.printStackTrace();
-	    }
-	}
-	ArrayList<VKPhoto> photos = new ArrayList<VKPhoto>();
-	JSONArray photosArray = new JSONArray();
-	int offset = 0;
-	do
-	{
-	    try
-	    {
-		photosArray = api.apipost(ApiMethod.GET_ALL_PHOTOS,
-			"?count=100&offset=" + offset).getJSONArray("response");
-		if (offset==0){photosTotal=photosArray.getString(0);}
-		for (int i = 1; i < photosArray.length(); i++)
-		{
-		    photos.add(new VKPhoto(photosArray.getJSONObject(i)));
-		}
-		offset += 100;
-	    } catch (JSONException e)
-	    {
-		// TODO Auto-generated catch block
-		System.out.println("This is not a photo");
-		e.printStackTrace();
-		return null;
-	    } catch (IOException e)
-	    {
-		// TODO Auto-generated catch block
-		System.out.println("No connection?");
-		e.printStackTrace();
-		return null;
-	    }
-	} while (photosArray.length() >= 100);
-	return photos;
-    }
-    
-    public void savePhotosToDrive (File dir, ArrayList<VKPhoto> photos)
+    /*
+     * public static void main(String... args) throws IOException { Manager
+     * manager = new Manager(); String token = manager.api.doLogin();
+     * System.out.println("ACCESS_TOKEN=" + token); ArrayList<VKPhoto> photos =
+     * manager.getAllPhotos();
+     * 
+     * manager.savePhotosToDrive("download/", photos);
+     * 
+     * }
+     */
+    public void savePhotosToDrive(File dir,
+	    HashMap<VKAlbum, LinkedList<VKPhoto>> map)
     {
 	JFrame frame = new JFrame("—охран€ю...");
 	JLabel label = new JLabel("Ћогин успешен!");
 	frame.add(label);
-	frame.setLocation(frame.getToolkit().getScreenSize().width / 2, frame.getToolkit()
-		.getScreenSize().height / 2);
-	frame.setSize(new Dimension(200,100));
+	frame.setLocation(frame.getToolkit().getScreenSize().width / 2, frame
+		.getToolkit().getScreenSize().height / 2);
+	frame.setSize(new Dimension(200, 100));
 	frame.setVisible(true);
-	for (VKPhoto photo : photos)
+	Set<VKAlbum> albums = map.keySet();
+	for (VKAlbum album : albums)
 	{
-	    String photoURL;
-	    URL url=null;
-	    if (photo.src_xxbig!=null)
+	    LinkedList<VKPhoto> photos = map.get(album);
+	    File albumDir = new File(dir.getPath()+"/"+fixString(album.title));
+	    albumDir.mkdirs();
+	    for (VKPhoto photo : photos)
 	    {
-		photoURL=photo.src_xxbig;
-	    }else {photoURL=photo.src_big;}
-	    try
-	    {
-		label.setText("—охран€ю фото"+photos.indexOf(photo)+" из "+photosTotal);
-		url = new URL(photoURL);
-		InputStream is = url.openStream();
-		OutputStream os = new FileOutputStream(dir.getPath()+"/"+"photo_"+photo.pid+".jpg");
-		byte[] b = new byte[1024];
-		int length;
-		while ((length = is.read(b))!=-1)
+		File file = new File(albumDir.getPath() + "/"
+			    + "photo_" + photo.pid + ".jpg");
+		if (file.exists()){System.out.println("Skipping: "+file.toString());continue;}
+		String photoURL;
+		URL url = null;
+		if (photo.src_xxbig != null)
 		{
-		    os.write(b,0,length);
+		    photoURL = photo.src_xxbig;
+		} else
+		{
+		    photoURL = photo.src_big;
 		}
-		is.close();
-		os.close();
-	    } catch (MalformedURLException e)
-	    {
-		System.out.println("Not proper url!");
-		e.printStackTrace();
-	    } catch (IOException e)
-	    {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }	  
+		try
+		{
+		    label.setText("—охран€ю фото" + photos.indexOf(photo)
+			    + " из " + photos.size());
+		    url = new URL(photoURL);
+		    InputStream is = url.openStream();
+		    OutputStream os = new FileOutputStream(file);
+		    byte[] b = new byte[1024];
+		    int length;
+		    while ((length = is.read(b)) != -1)
+		    {
+			os.write(b, 0, length);
+		    }
+		    is.close();
+		    os.close();
+		} catch (MalformedURLException e)
+		{
+		    System.out.println("Not proper url!");
+		    e.printStackTrace();
+		} catch (IOException e)
+		{
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
+	    }
 	}
 	frame.setVisible(false);
-	frame=null;
+	frame = null;
+
+    }
+    private String fixString(String str)
+    {
+	char[] chars = new char[]{'/','\\','*',':','?','"','<','>','|'};
+	for (char c : chars)
+	{
+	    str = str.replace(c, ' ');
+	}
+	return str;
     }
 }
