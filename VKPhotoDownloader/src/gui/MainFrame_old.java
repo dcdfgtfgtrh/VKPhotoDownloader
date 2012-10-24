@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiSystem;
@@ -90,9 +91,11 @@ public class MainFrame_old extends JFrame
 		    @Override
 		    public void run()
 		    {
-			Manager manager = new Manager(name.getText(), pass.getText());
+			Manager manager = new Manager();
+			
 			try
 			{
+			    manager.doLogin(name.getText(), pass.getText());
 			    manager.savePhotosToDrive(file,
 				    ApiUtils.makeAlbumsPhotosMap(manager.api));
 			} catch (VKException e)
@@ -117,6 +120,10 @@ public class MainFrame_old extends JFrame
 			    {
 				ex.printStackTrace();
 			    }
+			} catch (IOException e)
+			{
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
 			}
 		    }
 		};

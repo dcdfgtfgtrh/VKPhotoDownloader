@@ -15,17 +15,7 @@ public class ApiUtils
 
     public static ArrayList<VKPhoto> getAllPhotos(VKApi api) throws VKException
     {
-	if (api.isLogged()!=true)
-	{
-	    try
-	    {
-		api.doLogin();
-	    } catch (IOException e)
-	    {
-		System.out.println("Internet?");
-		e.printStackTrace();
-	    }
-	}
+	
 	ArrayList<VKPhoto> photos = new ArrayList<VKPhoto>();
 	JSONArray photosArray = new JSONArray();
 	int offset = 0;
@@ -59,17 +49,6 @@ public class ApiUtils
     
     public static LinkedList<VKAlbum> getAlbums(VKApi api) throws VKException
     {
-	if (api.isLogged()!=true)
-	{
-	    try
-	    {
-		api.doLogin();
-	    } catch (IOException e)
-	    {
-		System.out.println("Internet?");
-		e.printStackTrace();
-	    }
-	}
 	LinkedList<VKAlbum> albums= new LinkedList<VKAlbum>();
 	try
 	{
@@ -92,17 +71,6 @@ public class ApiUtils
     
     public static LinkedList<VKPhoto> getPhotosByAlbum(VKApi api, String aid) throws VKException
     {
-	if (api.isLogged()!=true)
-	{
-	    try
-	    {
-		api.doLogin();
-	    } catch (IOException e)
-	    {
-		System.out.println("Internet?");
-		e.printStackTrace();
-	    }
-	}
 	LinkedList<VKPhoto> photos = new LinkedList<VKPhoto>();
 	try
 	{

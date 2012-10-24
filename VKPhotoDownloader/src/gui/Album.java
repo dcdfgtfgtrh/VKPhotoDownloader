@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -14,12 +15,15 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
+import manager.Manager;
+
 import vkapi.VKAlbum;
 
 public class Album extends JComponent
 {
     private VKAlbum album;
     private static Logger log = Logger.getLogger(Album.class.getName());
+    private boolean isMouseOver = false;
     public boolean isChecked = false;
     
     public Album(VKAlbum album)
@@ -30,27 +34,26 @@ public class Album extends JComponent
 	{
 	    public void mouseEntered(MouseEvent e) 
 	    {
-		if(isChecked==false)
-		{
-		    setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLUE));
-		}
+		isMouseOver = true;
+		setCursor(new Cursor(Cursor.HAND_CURSOR));
+		repaint();
+		    
 	    }
 	    public void mouseExited(MouseEvent e) 
 	    {
-		if(isChecked==false)
-		{
-		    setBorder(null);
-		}
+		isMouseOver = false;
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		repaint();
 	    }
 	    public void mousePressed(MouseEvent e) 
 	    {
 		if (isChecked == false)
 		{
-		    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.BLUE));
 		    isChecked=true;
+		    repaint();	
 		}else{
-		    setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLUE));
 		    isChecked=false;
+		    repaint();
 		}
 	    }
 	});
@@ -70,6 +73,17 @@ public class Album extends JComponent
 	    log.log(Level.SEVERE, "Can`t get image- bad url source");
 	    e.printStackTrace();
 	}
+	if(isChecked==true)
+	{
+	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Manager.blue));
+	}else{
+	    setBorder(null);
+	    if(isMouseOver==true)
+		{
+		    setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Manager.blue));
+		}
+	}
+	
     }
     
     public  String getAlbumID()
@@ -84,5 +98,10 @@ public class Album extends JComponent
     public VKAlbum getAlbum()
     {
 	return album;
+    }
+    public void setChecked(boolean checked)
+    {
+	isChecked = checked;
+	repaint();
     }
 }

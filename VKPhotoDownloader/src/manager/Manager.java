@@ -1,5 +1,6 @@
 package manager;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,22 +32,24 @@ import vkapi.VKPhoto;
 public class Manager
 {
     public final VKApi api;
-
-    public Manager(String login, String pass)
+    public static Color blue = new Color(44,110,213);
+    
+    public Manager()
     {
-	api = new VKApi(login, pass);
+	api = new VKApi();
+	
+    }
+    public boolean doLogin(String login, String pass) throws IOException, VKException
+    {
+	api.doLogin(login, pass);
+	return api.isLogged();
+    }
+    public boolean doLogout()
+    {
+	api.doLogout();
+	return api.isLogged();
     }
 
-    /*
-     * public static void main(String... args) throws IOException { Manager
-     * manager = new Manager(); String token = manager.api.doLogin();
-     * System.out.println("ACCESS_TOKEN=" + token); ArrayList<VKPhoto> photos =
-     * manager.getAllPhotos();
-     * 
-     * manager.savePhotosToDrive("download/", photos);
-     * 
-     * }
-     */
     public void savePhotosToDrive(File dir,
 	    HashMap<VKAlbum, LinkedList<VKPhoto>> map)
     {
