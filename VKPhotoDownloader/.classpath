@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="E:/Donwloads/Programming/httpcomponents-client-4.2.1/lib/fluent-hc-4.2.1.jar"/>
 	<classpathentry kind="lib" path="E:/Donwloads/Programming/httpcomponents-client-4.2.1/lib/httpclient-cache-4.2.1.jar"/>
 	<classpathentry kind="lib" path="E:/Donwloads/Programming/httpcomponents-client-4.2.1/lib/httpmime-4.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Programming/Compiled/ResourceCrypt/ResourceCrypt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

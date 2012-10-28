@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.security.CryptoPrimitive;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -37,12 +38,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
+import crypt.CryptManager;
+import crypt.CryptMode;
+
+import utils.Utils;
 import vkapi.ApiUtils;
 import vkapi.VKAlbum;
 import vkapi.VKException;
@@ -61,13 +67,17 @@ public class MainFrame extends JFrame
     Manager manager;
     File pathFile;
     LinkedList<Album> albumIcons;
+    Dimension preferredSize;
     
-    public MainFrame()
+    public MainFrame() throws IOException
     {
 	super();
+	SplashScreen splash = new SplashScreen(getToolkit().createImage(CryptManager.decodeResource("img/splash.res")), 400, 500);
+	setIconImage(getToolkit().createImage(CryptManager.decodeResource("img/VK.res")));
 	manager = new Manager();
 	
-	loginPanel = BoxLayoutUtils.createVerticalPanel();
+	final VerticalLayout vertLayout = new VerticalLayout(0, VerticalLayout.CENTER,VerticalLayout.CENTER);
+	loginPanel = new JPanel(vertLayout);
 	
 	nameL = new JLabel("Email или номер телефона:");
 	name = new JTextField(15);
@@ -113,16 +123,31 @@ public class MainFrame extends JFrame
 	    @Override
 	    public void actionPerformed(ActionEvent e)
 	    {
-		System.out.println("in actionPerformed");
-		waitPanel = BoxLayoutUtils.createVerticalPanel();
-		JLabel waitLabel = new JLabel("Подождите пожалуйста");
-		waitPanel.add(waitLabel);
+		waitPanel = new JPanel(vertLayout);
+		JPanel waitFlowPanel =new JPanel(new FlowLayout(FlowLayout.CENTER,15,5));
+		JLabel preloaderLabel = null;
+		try
+		{
+		    preloaderLabel = new JLabel(new ImageIcon(CryptManager.decodeResource("img/preload.res")));
+		} catch (IOException e1)
+		{
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		}
+		JLabel waitLabel = new JLabel("Подождите пожалуйста...");
+		waitLabel.setForeground(Manager.blue);
+		waitLabel.setFont(new Font("Font",Font.BOLD,16));
+		waitLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		waitFlowPanel.add(preloaderLabel);
+		waitFlowPanel.add(waitLabel);
+		waitPanel.add(waitFlowPanel);
 		waitPanel.setOpaque(false);
-		//mainPanel=waitPanel;
+		waitFlowPanel.setOpaque(false);
+		
 		backgroundPanel.removeAll();
 		backgroundPanel.add(waitPanel);
 		backgroundPanel.validate();
-		backgroundPanel.repaint();
+		//backgroundPanel.repaint();
 		
 		Thread makeDnldPanel = new Thread(new Runnable()
 		{
@@ -155,8 +180,7 @@ public class MainFrame extends JFrame
 				JOptionPane.showMessageDialog(MainFrame.this,
 					e.getMessage());
 				backgroundPanel.removeAll();
-				backgroundPanel.add(Box.createVerticalGlue());
-				backgroundPanel.add(loginFPanel);
+				backgroundPanel.add(loginPanel);
 				backgroundPanel.validate();
 				backgroundPanel.repaint();
 			    } catch (Exception ex)
@@ -184,51 +208,42 @@ public class MainFrame extends JFrame
 	JPanel passPanel = new JPanel();
 	passPanel.add(passL);
 	passPanel.add(pass);
+	passPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 	
-	loginPanel.add(Box.createVerticalGlue());
 	loginPanel.add(namePanel);
 	loginPanel.add(passPanel);
-	loginPanel.add(Box.createVerticalStrut(12));
-	JPanel panel = new JPanel();
-	panel.setOpaque(false);
-	panel.add(login);
-	loginPanel.add(panel);
-	loginPanel.add(Box.createVerticalGlue());
+	loginPanel.add(login);
 	
-	/*
-	 * pack the panel in the panel with flow layout (components get their preferred size) and in the box layout (for center alignment)
-	 */
-	loginFPanel = new JPanel();
-	loginFPanel.add(loginPanel);
-	mainPanel= loginFPanel;
 	/*
 	 * forming TopPanel
 	 */
-	topPanel = new BackgroundPanel("img/TopTexture.png", 30, 30);
+	topPanel = new BackgroundPanel(getToolkit().createImage(CryptManager.decodeResource("img/TopTexture.res")), 30, 30);
+	//topPanel = new JPanel();
+	//topPanel.setBackground(Manager.blue);
 	topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 	topPanel.setBorder(BorderFactory.createCompoundBorder(
-		BorderFactory.createMatteBorder(2, 2, 0, 2, Color.BLACK), 
+		BorderFactory.createMatteBorder(2, 2, 0, 2, Manager.blue), 
 		BorderFactory.createEmptyBorder(7, 7, 7, 7)));
-	JLabel VKName = new JLabel("VK Photo Downloader beta1");
+	JLabel VKName = new JLabel("VK Photo Downloader beta4");
 	VKName.setForeground(Color.WHITE);
-	VKName.setFont(new Font("Font", Font.BOLD, 18));
-	ImageIcon minimIcon=new ImageIcon( getToolkit().getImage("img/buttons/minimize.png"));
+	VKName.setFont(new Font("Font", Font.BOLD, 20));
+	ImageIcon minimIcon=new ImageIcon(CryptManager.decodeResource("img/buttons/minimize.res"));
 	JLabel minimize = new JLabel(minimIcon);
+	minimize.setToolTipText("Свернуть");
 	minimize.addMouseListener(new MouseAdapter() {
 		public void mouseReleased(MouseEvent e){
-			setState(JFrame.ICONIFIED);
+		    setState(JFrame.ICONIFIED);
 		}
-		public void mouseEntered(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			setCursor(new Cursor(Cursor.HAND_CURSOR));
+		public void mouseEntered(MouseEvent e) {
+		    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		}
-		public void mouseExited(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		public void mouseExited(MouseEvent e) {
+		    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
 	});
-	ImageIcon exitIcon=new ImageIcon( getToolkit().getImage("img/buttons/exit.png"));
+	ImageIcon exitIcon=new ImageIcon(CryptManager.decodeResource("img/buttons/exit.res"));
 	JLabel exit = new JLabel(exitIcon);
+	exit.setToolTipText("Закрыть");
 	exit.addMouseListener(new MouseAdapter() {
 		public void mouseReleased(MouseEvent e){
 			System.exit(0);
@@ -249,22 +264,29 @@ public class MainFrame extends JFrame
 	topPanel.add(Box.createHorizontalStrut(5));
 	topPanel.add(exit);
 	
-	setTransparent(new JPanel[]{loginFPanel,loginPanel,namePanel,passPanel});
-	backgroundPanel = new BackgroundPanel("img/BackgroundTexture.png", 60, 60);
+	setTransparent(new JPanel[]{loginPanel,namePanel,passPanel});
+	backgroundPanel = new BackgroundPanel(getToolkit().createImage(CryptManager.decodeResource("img/BackgroundTexture.res")), 60, 60);
+	//backgroundPanel = new JPanel();
+	//backgroundPanel.setBackground(Color.white);
 	backgroundPanel.setLayout(new BoxLayout(backgroundPanel, BoxLayout.Y_AXIS));
-	backgroundPanel.add(Box.createVerticalGlue());
-	backgroundPanel.add(loginFPanel);
+	//backgroundPanel.add(Box.createVerticalGlue());
+	backgroundPanel.add(loginPanel);
 	backgroundPanel.setBorder(BorderFactory.createCompoundBorder(
-		BorderFactory.createMatteBorder(1, 2, 2, 2, Color.BLACK), 
-		BorderFactory.createEmptyBorder(22, 50, 22, 50)));
+		BorderFactory.createMatteBorder(1, 10,10, 10, Manager.blue), 
+		BorderFactory.createEmptyBorder(30, 50, 20, 50)));
 	getContentPane().add(topPanel,BorderLayout.NORTH);
 	getContentPane().add(backgroundPanel);
 	FrameDragger dragger = new FrameDragger(this);
-	addMouseListener(dragger);
-	addMouseMotionListener(dragger);
-	setSize(new Dimension(700,610));
+	topPanel.addMouseListener(dragger);
+	topPanel.addMouseMotionListener(dragger);
+	FrameResizer resizer = new FrameResizer(this);
+	addMouseListener(resizer);
+	addMouseMotionListener(resizer);
+	setMinimumSize(new Dimension(460,450));
+	setSize(new Dimension(705,625));
 	setLocation(getToolkit().getScreenSize().width/6, getToolkit().getScreenSize().height/6);
 	setUndecorated(true);
+	splash.dispose();
 	setVisible(true);
     }
     
@@ -283,7 +305,7 @@ public class MainFrame extends JFrame
 	//logout button
 	logout = ButtonFactory.getBlueButton("Выйти");
 	logout.setFont(new Font("Font",Font.BOLD,16));
-	logout.setMaximumSize(new Dimension(30, 40));
+	logout.setMaximumSize(new Dimension(120, 40));
 	logout.addActionListener(new ActionListener()
 	{
 	    
@@ -293,14 +315,14 @@ public class MainFrame extends JFrame
 		// TODO Auto-generated method stub
 		manager.doLogout();
 		backgroundPanel.removeAll();
-		backgroundPanel.add(Box.createVerticalGlue());
-		backgroundPanel.add(loginFPanel);
+		backgroundPanel.add(loginPanel);
 		backgroundPanel.validate();
 		backgroundPanel.repaint();
 	    }
 	});
 	//checkAll button
-	checkAll = ButtonFactory.getBlueButton(new ImageIcon(getToolkit().getImage("img/Checked2.png")));
+	checkAll = ButtonFactory.getBlueButton(new ImageIcon(CryptManager.decodeResource("img/Checked2.res")));
+	setPreferredWidth(checkAll, 80);
 	checkAll.setToolTipText("Выбрать все альбомы");
 	checkAll.addActionListener(new ActionListener()
 	{
@@ -319,7 +341,8 @@ public class MainFrame extends JFrame
 	    }
 	});
 	//uncheckAll button
-	uncheckAll = ButtonFactory.getBlueButton(new ImageIcon(getToolkit().getImage("img/unChecked2.png")));
+	uncheckAll = ButtonFactory.getBlueButton(new ImageIcon(CryptManager.decodeResource("img/unChecked2.res")));
+	setPreferredWidth(uncheckAll, 80);
 	uncheckAll.setToolTipText("Снять выбор");
 	uncheckAll.addActionListener(new ActionListener()
 	{
@@ -349,9 +372,7 @@ public class MainFrame extends JFrame
 	 * form the panel with album icons
 	 * and add it to the download panel
 	 */
-	//JPanel albumsInnerPane = new JPanel(new GridLayout(0, 4, 12, 12));
-	JPanel albumsInnerPane = new JPanel(new WrapLayout(FlowLayout.LEFT,12,12));
-	//albumsInnerPane.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));	
+	JPanel albumsInnerPane = new JPanel(new WrapLayout(FlowLayout.LEFT,12,7));	
 	albumsInnerPane.setBackground(Color.WHITE);
 	LinkedList<VKAlbum> albums = ApiUtils.getAlbums(manager.api);
 	/*
@@ -411,8 +432,9 @@ public class MainFrame extends JFrame
 	pathField.setText(pathFile.toString());
 	pathField.setEnabled(false);
 	pathField.setDisabledTextColor(Color.BLACK);
-	path = ButtonFactory.getBlueButton(new ImageIcon(getToolkit().getImage("img/View.png")));
+	path = ButtonFactory.getBlueButton(new ImageIcon(CryptManager.decodeResource("img/View.res")));
 	path.setMaximumSize(new Dimension(60,40));
+	setPreferredWidth(path, 90);
 	path.addActionListener(new ActionListener()
 	{
 
@@ -436,14 +458,14 @@ public class MainFrame extends JFrame
 	pathPanel.add(Box.createHorizontalStrut(5));
 	pathPanel.add(path);
 	downloadPanel.add(pathPanel);
-	downloadPanel.add(Box.createVerticalStrut(11));
+	downloadPanel.add(Box.createVerticalStrut(20));
 	
 	/*
 	 * add the download button
 	 */
 	download = ButtonFactory.getBlueButton("Скачать!");
-	download.setFont(new Font("Font",Font.BOLD,16));
-	download.setMaximumSize(new Dimension(130, 40));
+	download.setFont(new Font("Font",Font.BOLD,20));
+	setPreferredWidth(download, 150);
 	download.addActionListener(new ActionListener()
 	{
 
@@ -498,8 +520,23 @@ public class MainFrame extends JFrame
 	    panel.setOpaque(false);
 	}
     }
+    
+    private void setPreferredWidth(JComponent comp,int width)
+    {
+	preferredSize = comp.getPreferredSize();
+	preferredSize.width=width;
+	comp.setPreferredSize(preferredSize);
+    }
     public static void main(String... args)
     {
-	new MainFrame();
+	try
+	{
+	    new MainFrame();
+	} catch (Exception e)
+	{
+	    // TODO Auto-generated catch block
+	    //System.exit(0);
+	    e.printStackTrace();
+	}
     }
 }

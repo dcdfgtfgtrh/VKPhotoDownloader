@@ -32,7 +32,8 @@ import vkapi.VKPhoto;
 public class Manager
 {
     public final VKApi api;
-    public static Color blue = new Color(44,110,213);
+    //public static Color blue = new Color(44,110,213);
+    public static Color blue = new Color(68,126,218);
     
     public Manager()
     {

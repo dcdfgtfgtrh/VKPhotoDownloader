@@ -9,14 +9,15 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+
 public class BackgroundPanel extends JPanel
 {
 
     private static final long serialVersionUID = 4342737083056785514L;
-    String		    image;
     int		       width, height;
+    Image image;
 
-    public BackgroundPanel(String image, int width, int height)
+    public BackgroundPanel(Image image, int width, int height)
     {
 	super();
 	this.image = image;
@@ -28,24 +29,21 @@ public class BackgroundPanel extends JPanel
     {
 	super.paintComponent(g);
 	Graphics2D g2D = (Graphics2D) g;
-	Image displayImage = getToolkit().getImage(image);
-	if (displayImage != null)
-	{
+
 	    /*
 	     * BufferedImage bi = new BufferedImage(displayImage.getWidth(this),
 	     * displayImage.getHeight(this), BufferedImage.TYPE_INT_RGB);
 	     */
 	    BufferedImage bi = new BufferedImage(width, height,
 		    BufferedImage.TYPE_INT_ARGB);
-	    bi.createGraphics().drawImage(displayImage, 0, 0, this);
+	    bi.createGraphics().drawImage(image, 0, 0, this);
 
 	    Rectangle2D rectangle = new Rectangle2D.Float(0, 0,
-		    displayImage.getWidth(this), displayImage.getHeight(this));
+		    image.getWidth(this), image.getHeight(this));
 
 	    TexturePaint tp = new TexturePaint(bi, rectangle);
 	    g2D.setPaint(tp);
 	    g2D.fill(new Rectangle2D.Float(0, 0, getWidth(), getHeight()));
-	}
 
     }
 }
