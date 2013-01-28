@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -32,20 +31,23 @@ public class Album extends JComponent
 	setPreferredSize(new Dimension(130,130));
 	addMouseListener(new MouseAdapter()
 	{
-	    public void mouseEntered(MouseEvent e) 
+	    @Override
+		public void mouseEntered(MouseEvent e) 
 	    {
 		isMouseOver = true;
 		setCursor(new Cursor(Cursor.HAND_CURSOR));
 		repaint();
 		    
 	    }
-	    public void mouseExited(MouseEvent e) 
+	    @Override
+		public void mouseExited(MouseEvent e) 
 	    {
 		isMouseOver = false;
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		repaint();
 	    }
-	    public void mousePressed(MouseEvent e) 
+	    @Override
+		public void mousePressed(MouseEvent e) 
 	    {
 		if (isChecked == false)
 		{
@@ -59,7 +61,8 @@ public class Album extends JComponent
 	});
     }
     
-    public void paintComponent(Graphics g)
+    @Override
+	public void paintComponent(Graphics g)
     {
 	try
 	{

@@ -6,7 +6,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,7 +15,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.security.CryptoPrimitive;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -38,17 +37,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-
+import javax.swing.ScrollPaneConstants;
 import crypt.CryptManager;
-import crypt.CryptMode;
-
-import utils.Utils;
 import vkapi.ApiUtils;
 import vkapi.VKAlbum;
 import vkapi.VKException;
@@ -231,12 +224,15 @@ public class MainFrame extends JFrame
 	JLabel minimize = new JLabel(minimIcon);
 	minimize.setToolTipText("Свернуть");
 	minimize.addMouseListener(new MouseAdapter() {
+		@Override
 		public void mouseReleased(MouseEvent e){
-		    setState(JFrame.ICONIFIED);
+		    setState(Frame.ICONIFIED);
 		}
+		@Override
 		public void mouseEntered(MouseEvent e) {
 		    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		}
+		@Override
 		public void mouseExited(MouseEvent e) {
 		    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
@@ -245,13 +241,16 @@ public class MainFrame extends JFrame
 	JLabel exit = new JLabel(exitIcon);
 	exit.setToolTipText("Закрыть");
 	exit.addMouseListener(new MouseAdapter() {
+		@Override
 		public void mouseReleased(MouseEvent e){
 			System.exit(0);
 		}
+		@Override
 		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			setCursor(new Cursor(Cursor.HAND_CURSOR));
 		}
+		@Override
 		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -405,6 +404,9 @@ public class MainFrame extends JFrame
 	    panel.add(alb);
 	    panel.add(Box.createVerticalStrut(5));
 	    JTextArea label = new JTextArea(album.title);
+	    
+	    //TODO fix align with darwinsys StringAlign.java
+	    
 	    label.setPreferredSize(new Dimension(130,30));
 	    label.setEditable(false);
 	    label.setLineWrap(true);
@@ -414,7 +416,7 @@ public class MainFrame extends JFrame
 	    panel.setOpaque(false);
 	    albumsInnerPane.add(panel);
 	}
-	albumsPane = new JScrollPane(albumsInnerPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	albumsPane = new JScrollPane(albumsInnerPane,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	albumsPane.setPreferredSize(new Dimension(750,500));
 	downloadPanel.add(albumsPane);
 	downloadPanel.add(Box.createVerticalStrut(7));

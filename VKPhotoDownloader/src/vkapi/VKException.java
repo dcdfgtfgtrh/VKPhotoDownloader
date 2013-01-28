@@ -16,7 +16,8 @@ public class VKException extends Exception
     {
 	return code;
     }
-    public String getMessage()
+    @Override
+	public String getMessage()
     {
 	return message;
     }

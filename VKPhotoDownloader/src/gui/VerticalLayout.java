@@ -114,7 +114,8 @@ public class VerticalLayout implements LayoutManager{
 /**
  * Lays out the container.
  */
-   public void layoutContainer(Container parent){
+   @Override
+public void layoutContainer(Container parent){
   Insets insets=parent.getInsets();
   synchronized(parent.getTreeLock()){
     int n=parent.getComponentCount();
@@ -144,20 +145,25 @@ public class VerticalLayout implements LayoutManager{
   }
    }
 //-----------------------------------------------------------------------------
-   public Dimension minimumLayoutSize(Container parent){return layoutSize(parent,false);}
+   @Override
+public Dimension minimumLayoutSize(Container parent){return layoutSize(parent,false);}
 //-----------------------------------------------------------------------------
-   public Dimension preferredLayoutSize(Container parent){return layoutSize(parent,false);}
+   @Override
+public Dimension preferredLayoutSize(Container parent){return layoutSize(parent,false);}
 //----------------------------------------------------------------------------
 /**
  * Not used by this class
  */
-   public void addLayoutComponent(String name,Component comp){}
+   @Override
+public void addLayoutComponent(String name,Component comp){}
 //-----------------------------------------------------------------------------
 /**
  * Not used by this class
  */
-   public void removeLayoutComponent(Component comp){}
+   @Override
+public void removeLayoutComponent(Component comp){}
 //-----------------------------------------------------------------------------
-   public String toString(){return getClass().getName()+"[vgap="+vgap+" align="+alignment+" anchor="+anchor+"]";}
+   @Override
+public String toString(){return getClass().getName()+"[vgap="+vgap+" align="+alignment+" anchor="+anchor+"]";}
 }
 

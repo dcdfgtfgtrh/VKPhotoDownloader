@@ -18,7 +18,8 @@ public class FrameDragger implements MouseListener, MouseMotionListener {
         this.frameToDrag = frameToDrag;
     }
 
-    public void mouseDragged(MouseEvent e) {
+    @Override
+	public void mouseDragged(MouseEvent e) {
         Point currentDragPosition = e.getLocationOnScreen();
         int deltaX = currentDragPosition.x - lastDragPosition.x;
         int deltaY = currentDragPosition.y - lastDragPosition.y;
@@ -30,7 +31,8 @@ public class FrameDragger implements MouseListener, MouseMotionListener {
         }
     }
 
-    public void mousePressed(MouseEvent e) {
+    @Override
+	public void mousePressed(MouseEvent e) {
     	
     	e.getComponent().setCursor(new Cursor(Cursor.MOVE_CURSOR));
         lastDragPosition = e.getLocationOnScreen();
