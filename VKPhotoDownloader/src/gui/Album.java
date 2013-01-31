@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
-import manager.Manager;
+import manager.Utils;
 
 import vkapi.VKAlbum;
 
@@ -78,12 +78,12 @@ public class Album extends JComponent
 	}
 	if(isChecked==true)
 	{
-	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Manager.blue));
+	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Utils.blue));
 	}else{
 	    setBorder(null);
 	    if(isMouseOver==true)
 		{
-		    setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Manager.blue));
+		    setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Utils.blue));
 		}
 	}
 	
