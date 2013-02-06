@@ -1,4 +1,4 @@
-package com.vaka.vkdownloader.gui;
+package com.vaka.vkdownloader.gui.utils;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package com.vaka.vkdownloader.gui;
+package com.vaka.vkdownloader.gui.utils;
 
 import java.awt.Cursor;
 import java.awt.Point;

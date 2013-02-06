@@ -47,6 +47,11 @@ import com.vaka.vkapi.ApiUtils;
 import com.vaka.vkapi.VKAlbum;
 import com.vaka.vkapi.VKException;
 import com.vaka.vkapi.VKPhoto;
+import com.vaka.vkdownloader.gui.utils.BoxLayoutUtils;
+import com.vaka.vkdownloader.gui.utils.ButtonFactory;
+import com.vaka.vkdownloader.gui.utils.FrameDragger;
+import com.vaka.vkdownloader.gui.utils.FrameResizer;
+import com.vaka.vkdownloader.gui.utils.GUITools;
 import com.vaka.vkdownloader.utils.Utils;
 
 import crypt.CryptManager;
