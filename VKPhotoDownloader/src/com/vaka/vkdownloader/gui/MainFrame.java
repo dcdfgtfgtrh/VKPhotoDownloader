@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.sound.midi.MidiEvent;
@@ -132,7 +133,6 @@ public class MainFrame extends JFrame {
 				backgroundPanel.removeAll();
 				backgroundPanel.add(waitPanel);
 				backgroundPanel.validate();
-				// backgroundPanel.repaint();
 
 				Thread makeDnldPanel = new Thread(new Runnable() {
 
@@ -141,7 +141,6 @@ public class MainFrame extends JFrame {
 						try {
 							downloadPanel = createDnldPanel(nameField.getText(),
 									passField.getText());
-							// mainPanel = downloadPanel;
 							backgroundPanel.removeAll();
 							backgroundPanel.add(downloadPanel);
 							backgroundPanel.validate();
@@ -165,12 +164,9 @@ public class MainFrame extends JFrame {
 								backgroundPanel.validate();
 								backgroundPanel.repaint();
 							} catch (Exception ex) {
-								// TODO Auto-generated catch block
 								ex.printStackTrace();
 							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-						}
+						} catch (IOException e) {}
 					}
 				});
 				makeDnldPanel.start();
@@ -196,10 +192,8 @@ public class MainFrame extends JFrame {
 		/*
 		 * forming TopPanel
 		 */
-		headerPanel = new BackgroundPanel(getToolkit().createImage(
+		headerPanel = new TexturedPanel(getToolkit().createImage(
 				CryptManager.decodeResource("img/TopTexture.res")), 30, 30);
-		// topPanel = new JPanel();
-		// topPanel.setBackground(Manager.blue);
 		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
 		headerPanel.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createMatteBorder(2, 2, 0, 2, Utils.blue),
@@ -239,13 +233,11 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
 				setCursor(new Cursor(Cursor.HAND_CURSOR));
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
 		});
@@ -257,14 +249,11 @@ public class MainFrame extends JFrame {
 		headerPanel.add(exit);
 
 		setTransparent(new JPanel[] { loginPanel, namePanel, passPanel });
-		backgroundPanel = new BackgroundPanel(getToolkit().createImage(
+		backgroundPanel = new TexturedPanel(getToolkit().createImage(
 				CryptManager.decodeResource("img/BackgroundTexture.res")), 60,
 				60);
-		// backgroundPanel = new JPanel();
-		// backgroundPanel.setBackground(Color.white);
 		backgroundPanel.setLayout(new BoxLayout(backgroundPanel,
 				BoxLayout.Y_AXIS));
-		// backgroundPanel.add(Box.createVerticalGlue());
 		backgroundPanel.add(loginPanel);
 		backgroundPanel.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createMatteBorder(1, 10, 10, 10, Utils.blue),
@@ -362,7 +351,7 @@ public class MainFrame extends JFrame {
 		JPanel albumsInnerPane = new JPanel(new WrapLayout(FlowLayout.LEFT, 12,
 				7));
 		albumsInnerPane.setBackground(Color.WHITE);
-		LinkedList<VKAlbum> albums = ApiUtils.getAlbums(manager.api);
+		List<VKAlbum> albums = ApiUtils.getAlbums(manager.api);
 		/*
 		 * api doesn`t provide the opportunity to get service albums within
 		 * getAlbums method so, add them manually
@@ -370,8 +359,8 @@ public class MainFrame extends JFrame {
 		try {
 			VKAlbum service = new VKAlbum();
 			service.aid = "profile";
-			service.thumb_src = ApiUtils.getPhotosByAlbum(manager.api,
-					service.aid).getLast().src;
+			service.thumb_src = ((LinkedList<VKPhoto>) ApiUtils.getPhotosByAlbum(manager.api,
+					service.aid)).getLast().src;
 			service.title = "‘ото со стены";
 			albums.add(service);
 		} catch (NoSuchElementException e) {
@@ -464,20 +453,19 @@ public class MainFrame extends JFrame {
 
 					@Override
 					public void run() {
-						HashMap<VKAlbum, LinkedList<VKPhoto>> map = new HashMap<VKAlbum, LinkedList<VKPhoto>>();
+						HashMap<VKAlbum, List<VKPhoto>> map = new HashMap<VKAlbum, List<VKPhoto>>();
 						for (Album alb : albumIcons) {
 							if (alb.isChecked) {
 								try {
 									map.put(alb.getAlbum(), ApiUtils
-											.getPhotosByAlbum(manager.api,
+											.getPhotosByAlbum(Utils.api,
 													alb.getAlbumID()));
 								} catch (VKException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}
 						}
-						manager.savePhotosToDrive(pathFile, map);
+						Utils.savePhotosToDrive(pathFile, map);
 					}
 				};
 				Thread savePhotos = new Thread(run);

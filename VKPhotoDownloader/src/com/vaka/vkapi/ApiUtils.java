@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
@@ -12,9 +13,9 @@ import org.json.me.JSONObject;
 
 public class ApiUtils {
 
-	public static ArrayList<VKPhoto> getAllPhotos(VKApi api) throws VKException {
+	public static List<VKPhoto> getAllPhotos(VKApi api) throws VKException {
 
-		ArrayList<VKPhoto> photos = new ArrayList<VKPhoto>();
+		List<VKPhoto> photos = new ArrayList<VKPhoto>();
 		JSONArray photosArray = new JSONArray();
 		int offset = 0;
 		do {
@@ -26,12 +27,10 @@ public class ApiUtils {
 				}
 				offset += 100;
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				System.out.println("This is not a photo");
 				e.printStackTrace();
 				return null;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				System.out.println("No connection?");
 				e.printStackTrace();
 				return null;
@@ -40,7 +39,7 @@ public class ApiUtils {
 		return photos;
 	}
 
-	public static LinkedList<VKAlbum> getAlbums(VKApi api) throws VKException {
+	public static List<VKAlbum> getAlbums(VKApi api) throws VKException {
 		LinkedList<VKAlbum> albums = new LinkedList<VKAlbum>();
 		try {
 			JSONArray albumsArray = api.apipost(ApiMethod.GET_ALBUMS,
@@ -49,16 +48,14 @@ public class ApiUtils {
 				albums.add(new VKAlbum((JSONObject) albumsArray.get(i)));
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return albums;
 	}
 
-	public static LinkedList<VKPhoto> getPhotosByAlbum(VKApi api, String aid)
+	public static List<VKPhoto> getPhotosByAlbum(VKApi api, String aid)
 			throws VKException {
 		LinkedList<VKPhoto> photos = new LinkedList<VKPhoto>();
 		try {
@@ -68,29 +65,27 @@ public class ApiUtils {
 				photos.add(new VKPhoto((JSONObject) photosArray.get(i)));
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return photos;
 	}
 
-	public static HashMap<VKAlbum, LinkedList<VKPhoto>> makeAlbumsPhotosMap(
+	public static HashMap<VKAlbum, List<VKPhoto>> makeAlbumsPhotosMap(
 			VKApi api) throws VKException {
-		HashMap<VKAlbum, LinkedList<VKPhoto>> map = new HashMap<VKAlbum, LinkedList<VKPhoto>>();
-		LinkedList<VKAlbum> albums = getAlbums(api);
+		HashMap<VKAlbum, List<VKPhoto>> map = new HashMap<VKAlbum, List<VKPhoto>>();
+		List<VKAlbum> albums = getAlbums(api);
 		Iterator<VKAlbum> albumIter = albums.iterator();
 		while (albumIter.hasNext()) {
 			VKAlbum album = albumIter.next();
-			LinkedList<VKPhoto> photos = getPhotosByAlbum(api,
+			List<VKPhoto> photos = getPhotosByAlbum(api,
 					String.valueOf(album.aid));
 			map.put(album, photos);
 		}
 		VKAlbum service = new VKAlbum();
 		service.title = "Фотографии со стены";
-		LinkedList<VKPhoto> photos = getPhotosByAlbum(api, "profile");
+		List<VKPhoto> photos = getPhotosByAlbum(api, "profile");
 		map.put(service, photos);
 		return map;
 	}

@@ -8,6 +8,7 @@ public class VKException extends Exception {
 	private String message;
 
 	public VKException(int code, String message) {
+		super();
 		this.code = code;
 		this.message = message;
 	}

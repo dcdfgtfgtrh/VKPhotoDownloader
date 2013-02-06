@@ -45,7 +45,7 @@ public class VKApi {
 		HttpClient client = new DefaultHttpClient();
 
 		/*
-		 * now form and execute first post response will give the login form
+		 * now form and execute first post. Response will give the login form
 		 */
 		post = new HttpPost("http://oauth.vk.com/authorize?" + "client_id="
 				+ client_id + "&scope=" + scope + "&redirect_uri="
@@ -73,9 +73,9 @@ public class VKApi {
 		to = findKey(location, "name=\"to\" value=\"", "\"");
 
 		/*
-		 * fill the login form and post it the response will redirect to
-		 * ACCESS_TOKEN obtaining or to the permissions granting if user runs
-		 * the app for the first time or the permissions have changed or to the
+		 * fill the login form and post it. The response will redirect to
+		 * ACCESS_TOKEN obtaining; or to the permissions granting, if user runs
+		 * the app for the first time, or the permissions have changed; or to the
 		 * login form if either login or password are incorrect
 		 */
 		post = new HttpPost("https://login.vk.com/?act=login&soft=1&utf8=1"
@@ -91,7 +91,7 @@ public class VKApi {
 
 		/*
 		 * if it is redirect (response contains header "location") we got
-		 * redirect to ACCESS_TOKEN obtaining if not, it is POST form for
+		 * redirect to ACCESS_TOKEN obtaining; if not, it is POST form for
 		 * permissions granting or the login form
 		 */
 		if (!response.containsHeader("location")) {
@@ -169,6 +169,5 @@ public class VKApi {
 		}
 		System.out.println(sb.toString());
 		return new JSONObject(sb.toString());
-
 	}
 }

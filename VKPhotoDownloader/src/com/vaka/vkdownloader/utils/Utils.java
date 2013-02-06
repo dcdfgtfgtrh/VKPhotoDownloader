@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -47,7 +48,7 @@ public class Utils {
 	 * Separate GUI code!
 	 */
 	public static void savePhotosToDrive(File dir,
-			HashMap<VKAlbum, LinkedList<VKPhoto>> albumsPhotosMap) {
+			HashMap<VKAlbum, List<VKPhoto>> map) {
 		JFrame frame = new JFrame("Сохраняю...");
 		JLabel label = new JLabel("Логин успешен!");
 		frame.add(label);
@@ -57,8 +58,8 @@ public class Utils {
 		frame.setSize(new Dimension(200, 100));
 		frame.setVisible(true);
 		
-		for (VKAlbum album : albumsPhotosMap.keySet()) {
-			LinkedList<VKPhoto> photos = albumsPhotosMap.get(album);
+		for (VKAlbum album : map.keySet()) {
+			List<VKPhoto> photos = map.get(album);
 			File albumDir = new File(dir.getPath() + "/"
 					+ fixString(album.title));
 			albumDir.mkdirs();
