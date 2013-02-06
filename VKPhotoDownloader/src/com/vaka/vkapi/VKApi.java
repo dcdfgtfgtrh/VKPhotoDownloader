@@ -1,4 +1,4 @@
-package vkapi;
+package com.vaka.vkapi;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

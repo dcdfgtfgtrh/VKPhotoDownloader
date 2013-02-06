@@ -1,4 +1,4 @@
-package vkapi;
+package com.vaka.vkapi;
 
 import java.io.IOException;
 import java.util.ArrayList;

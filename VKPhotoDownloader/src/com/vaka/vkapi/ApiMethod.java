@@ -1,4 +1,4 @@
-package vkapi;
+package com.vaka.vkapi;
 
 public abstract class ApiMethod {
 	public static final String GET_ALBUMS = "photos.getAlbums";

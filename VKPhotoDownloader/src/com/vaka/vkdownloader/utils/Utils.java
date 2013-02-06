@@ -1,4 +1,4 @@
-package manager;
+package com.vaka.vkdownloader.utils;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,10 +16,11 @@ import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import vkapi.VKAlbum;
-import vkapi.VKApi;
-import vkapi.VKException;
-import vkapi.VKPhoto;
+import com.vaka.vkapi.VKAlbum;
+import com.vaka.vkapi.VKApi;
+import com.vaka.vkapi.VKException;
+import com.vaka.vkapi.VKPhoto;
+
 
 public class Utils {
 	public final static VKApi api;
@@ -30,7 +31,7 @@ public class Utils {
 		api = new VKApi();
 	}
 
-
+	//TODO: Get rid of these 2 methods!
 	public static boolean doLogin(String login, String pass) throws IOException,
 			VKException {
 		api.doLogin(login, pass);

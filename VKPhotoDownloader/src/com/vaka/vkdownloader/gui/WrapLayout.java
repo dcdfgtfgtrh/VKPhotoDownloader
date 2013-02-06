@@ -1,4 +1,4 @@
-package gui;
+package com.vaka.vkdownloader.gui;
 
 import java.awt.*;
 import javax.swing.JScrollPane;

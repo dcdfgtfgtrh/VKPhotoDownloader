@@ -1,4 +1,4 @@
-package vkapi;
+package com.vaka.vkapi;
 
 import org.json.me.JSONException;
 import org.json.me.JSONObject;

@@ -1,4 +1,4 @@
-package vkapi;
+package com.vaka.vkapi;
 
 public class VKException extends Exception {
 	public static final int LOGIN_PW = 1;

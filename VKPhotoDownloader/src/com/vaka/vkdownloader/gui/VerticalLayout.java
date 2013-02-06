@@ -1,4 +1,4 @@
-package gui;
+package com.vaka.vkdownloader.gui;
 
 /**
 THIS PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES (OR CONDITIONS),

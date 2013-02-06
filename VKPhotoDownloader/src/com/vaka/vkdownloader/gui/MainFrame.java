@@ -1,4 +1,4 @@
-package gui;
+package com.vaka.vkdownloader.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -41,13 +41,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import crypt.CryptManager;
-import vkapi.ApiUtils;
-import vkapi.VKAlbum;
-import vkapi.VKException;
-import vkapi.VKPhoto;
 
-import manager.Utils;
+import com.vaka.vkapi.ApiUtils;
+import com.vaka.vkapi.VKAlbum;
+import com.vaka.vkapi.VKException;
+import com.vaka.vkapi.VKPhoto;
+import com.vaka.vkdownloader.utils.Utils;
+
+import crypt.CryptManager;
+
 
 public class MainFrame extends JFrame {
 	JPanel backgroundPanel, headerPanel, mainPanel, loginPanel, downloadPanel,
