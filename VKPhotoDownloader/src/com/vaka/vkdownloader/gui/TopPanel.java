@@ -28,9 +28,11 @@ public class TopPanel extends TexturedPanel {
 		setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createMatteBorder(2, 2, 0, 2, Utils.blue),
 				BorderFactory.createEmptyBorder(7, 7, 7, 7)));
+		
 		JLabel VKName = new JLabel("VK Photo Downloader beta4");
 		VKName.setForeground(Color.WHITE);
 		VKName.setFont(new Font("Font", Font.BOLD, 20));
+		
 		ImageIcon minimIcon = new ImageIcon(
 				CryptManager.decodeResource("img/buttons/minimize.res"));
 		JLabel minimize = new JLabel(minimIcon);
@@ -51,6 +53,7 @@ public class TopPanel extends TexturedPanel {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			}
 		});
+		
 		ImageIcon exitIcon = new ImageIcon(
 				CryptManager.decodeResource("img/buttons/exit.res"));
 		JLabel exit = new JLabel(exitIcon);
@@ -76,8 +79,6 @@ public class TopPanel extends TexturedPanel {
 		add(Box.createHorizontalGlue());
 		add(minimize);
 		add(Box.createHorizontalStrut(5));
-		add(exit);
-		
-		
+		add(exit);	
 	}
 }

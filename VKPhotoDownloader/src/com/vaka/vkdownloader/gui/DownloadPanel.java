@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.swing.Box;
@@ -44,19 +45,21 @@ public class DownloadPanel extends JPanel {
 	JTextField pathField;
 	JButton logout, checkAll, uncheckAll, path, download;
 	File pathFile;
-	LinkedList<Album> albumIcons;
+	List<Album> albumIcons;
 	public DownloadPanel(String login, String pass) throws IOException,
 			VKException {
 		super();
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
 		Utils.doLogin(login, pass);
-		JPanel downloadPanel = BoxLayoutUtils.createVerticalPanel();
+		
 		/*
 		 * form the top panel with "logout", "check all", "check none" buttons
 		 * and add it to the download panel
 		 */
 		logoutAndCheckPanel = BoxLayoutUtils.createHorizontalPanel();
+		
 		// logout button
 		logout = ButtonFactory.getBlueButton("Выйти");
 		logout.setFont(new Font("Font", Font.BOLD, 16));
@@ -71,9 +74,9 @@ public class DownloadPanel extends JPanel {
 				backgroundPanel.removeAll();
 				backgroundPanel.add(LoginPanel.getLoginPanel());
 				backgroundPanel.validate();
-				backgroundPanel.repaint();
 			}
 		});
+		
 		// checkAll button
 		checkAll = ButtonFactory.getBlueButton(new ImageIcon(CryptManager
 				.decodeResource("img/Checked2.res")));
@@ -83,7 +86,7 @@ public class DownloadPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				if (albumIcons==null){return;}
 				for (Album album : albumIcons) {
 					if (album.isChecked == false) {
 						album.setChecked(true);
@@ -91,6 +94,7 @@ public class DownloadPanel extends JPanel {
 				}
 			}
 		});
+		
 		// uncheckAll button
 		uncheckAll = ButtonFactory.getBlueButton(new ImageIcon(CryptManager
 				.decodeResource("img/unChecked2.res")));
@@ -100,7 +104,7 @@ public class DownloadPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				if (albumIcons==null){return;}
 				for (Album album : albumIcons) {
 					if (album.isChecked == true) {
 						album.setChecked(false);
@@ -108,6 +112,7 @@ public class DownloadPanel extends JPanel {
 				}
 			}
 		});
+		
 		logoutAndCheckPanel.add(logout);
 		logoutAndCheckPanel.add(Box.createHorizontalGlue());
 		logoutAndCheckPanel.add(checkAll);
@@ -119,26 +124,24 @@ public class DownloadPanel extends JPanel {
 		/*
 		 * form the panel with album icons and add it to the download panel
 		 */
-		JPanel albumsInnerPane = new JPanel(new WrapLayout(FlowLayout.LEFT, 12,
-				7));
+		JPanel albumsInnerPane = new JPanel(new WrapLayout(FlowLayout.LEFT, 12,	7));
 		albumsInnerPane.setBackground(Color.WHITE);
 		List<VKAlbum> albums = ApiUtils.getAlbums(Utils.api);
 		/*
 		 * api doesn`t provide the opportunity to get service albums within
 		 * getAlbums method so, add them manually
 		 */
-		try {
-			VKAlbum service = new VKAlbum();
-			service.aid = "profile";
-			service.thumb_src = ((LinkedList<VKPhoto>) ApiUtils
-					.getPhotosByAlbum(Utils.api, service.aid)).getLast().src;
+		VKAlbum service = new VKAlbum();
+		service.aid = "profile";
+		List<VKPhoto> photos= ApiUtils.getPhotosByAlbum(Utils.api, service.aid);
+		if (photos.isEmpty() == false) {
+			service.thumb_src = photos.get(photos.size() - 1).src;
 			service.title = "Фото со стены";
 			albums.add(service);
-		} catch (NoSuchElementException e) {
-
 		}
+
 		/*
-		 * fill the albumIcons list with the icons create labels with album
+		 * fill the albumIcons list with the icons. Create labels with album
 		 * names add them to the panels add panels to the scrollPane
 		 */
 		albumIcons = new LinkedList<Album>();
@@ -149,9 +152,7 @@ public class DownloadPanel extends JPanel {
 			panel.add(alb);
 			panel.add(Box.createVerticalStrut(5));
 			JTextArea label = new JTextArea(album.title);
-
 			// TODO fix align with darwinsys StringAlign.java
-
 			label.setPreferredSize(new Dimension(130, 30));
 			label.setEditable(false);
 			label.setLineWrap(true);
@@ -161,6 +162,7 @@ public class DownloadPanel extends JPanel {
 			panel.setOpaque(false);
 			albumsInnerPane.add(panel);
 		}
+		
 		albumsPane = new JScrollPane(albumsInnerPane,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -172,7 +174,6 @@ public class DownloadPanel extends JPanel {
 		 * form the panel which provides path choosing and add it to the
 		 * download panel
 		 */
-		// pathPanel = new JPanel();
 		pathPanel = BoxLayoutUtils.createHorizontalPanel();
 		pathLabel = new JLabel("Путь: ");
 		pathField = new JTextField(15);
@@ -220,34 +221,16 @@ public class DownloadPanel extends JPanel {
 				if (pathFile == null) {
 					pathFile = new File("C:/Фото/");
 				}
-				Runnable run = new Runnable() {
-
-					@Override
-					public void run() {
-						HashMap<VKAlbum, List<VKPhoto>> map = new HashMap<VKAlbum, List<VKPhoto>>();
-						for (Album alb : albumIcons) {
-							if (alb.isChecked) {
-								try {
-									map.put(alb.getAlbum(), ApiUtils
-											.getPhotosByAlbum(Utils.api,
-													alb.getAlbumID()));
-								} catch (VKException e) {
-									e.printStackTrace();
-								}
-							}
-						}
-						Utils.savePhotosToDrive(pathFile, map);
-					}
-				};
-				Thread savePhotos = new Thread(run);
+				Thread savePhotos = new SavePhotosThread(albumIcons, pathFile);
 				savePhotos.start();
 			}
 
 		});
 		GUITools.makeTransparent(new JPanel[] {this, logoutAndCheckPanel, pathPanel });
-		JPanel panel = new JPanel();
-		panel.setOpaque(false);
-		panel.add(download);
-		add(panel);
+		//wrap it in flow layout
+		JPanel flowLayoutPanel = new JPanel();
+		flowLayoutPanel.setOpaque(false);
+		flowLayoutPanel.add(download);
+		add(flowLayoutPanel);
 	}
 }

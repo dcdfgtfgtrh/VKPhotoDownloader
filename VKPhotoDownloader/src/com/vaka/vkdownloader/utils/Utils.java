@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -48,7 +49,7 @@ public class Utils {
 	 * Separate GUI code!
 	 */
 	public static void savePhotosToDrive(File dir,
-			HashMap<VKAlbum, List<VKPhoto>> map) {
+			Map<VKAlbum, List<VKPhoto>> map) {
 		JFrame frame = new JFrame("Сохраняю...");
 		JLabel label = new JLabel("Логин успешен!");
 		frame.add(label);

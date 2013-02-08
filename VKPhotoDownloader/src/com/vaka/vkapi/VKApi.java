@@ -2,6 +2,7 @@ package com.vaka.vkapi;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.apache.http.HttpEntity;
@@ -54,18 +55,9 @@ public class VKApi {
 		response = client.execute(post);
 		post.abort();
 		/*
-		 * parse POST form from response
+		 * parse POST-form from response
 		 */
-		HttpEntity ent = response.getEntity();
-
-		BufferedInputStream bis = new BufferedInputStream(ent.getContent());
-		byte[] buffer = new byte[1024];
-		int count;
-		StringBuilder sb = new StringBuilder();
-		while ((count = bis.read(buffer)) != -1) {
-			sb.append(new String(buffer, 0, count, "utf-8"));
-		}
-		location = sb.toString();
+		location = converHttpEntityToString(response.getEntity());
 		/*
 		 * parse "ip_h" ant "to" required for log in
 		 */
@@ -95,15 +87,7 @@ public class VKApi {
 		 * permissions granting or the login form
 		 */
 		if (!response.containsHeader("location")) {
-			ent = response.getEntity();
-			bis = new BufferedInputStream(ent.getContent());
-			buffer = new byte[1024];
-			count = 0;
-			sb = new StringBuilder();
-			while ((count = bis.read(buffer)) != -1) {
-				sb.append(new String(buffer, 0, count, "utf-8"));
-			}
-			location = sb.toString();
+			location = converHttpEntityToString(response.getEntity());
 			location = findKey(location, " action=\"", "\"");
 			/*
 			 * recognize login form and throw exception
@@ -124,12 +108,15 @@ public class VKApi {
 			e.printStackTrace();
 		}
 		post.abort();
+		
 		// saving token
-
 		location = response.getFirstHeader("location").getValue();
-		ACCES_TOKEN = location.split("#")[1].split("&")[0].split("=")[1];
-		uid = Integer
-				.parseInt(location.split("#")[1].split("&")[2].split("=")[1]);
+		ACCES_TOKEN = location.split("#")[1]
+								.split("&")[0]
+								.split("=")[1];
+		uid = Integer.parseInt(location.split("#")[1]
+										.split("&")[2]
+										.split("=")[1]);
 		isLoggedIn = true;
 	}
 
@@ -151,23 +138,24 @@ public class VKApi {
 		return null;
 	}
 
-	public JSONObject apipost(String method, String args) throws JSONException,
+	public JSONObject executeApiMethod(String method, String args) throws JSONException,
 			IOException {
 		HttpClient client = new DefaultHttpClient();
 		// POST | GET as described in api
 		HttpGet get = new HttpGet(apiURI + method + args + "&access_token="
 				+ ACCES_TOKEN);
 		response = client.execute(get);
-
+		return new JSONObject(converHttpEntityToString(response.getEntity()));
+	}
+	
+	private String converHttpEntityToString(HttpEntity ent) throws IOException{
+		BufferedInputStream bis = new BufferedInputStream(ent.getContent());
 		byte[] buffer = new byte[1024];
 		int count;
-		BufferedInputStream bis = new BufferedInputStream(response.getEntity()
-				.getContent());
 		StringBuilder sb = new StringBuilder();
 		while ((count = bis.read(buffer)) != -1) {
 			sb.append(new String(buffer, 0, count, "utf-8"));
 		}
-		System.out.println(sb.toString());
-		return new JSONObject(sb.toString());
+		return sb.toString();
 	}
 }

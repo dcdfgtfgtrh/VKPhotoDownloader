@@ -43,6 +43,7 @@ public class LoginPanel extends JPanel {
 	JLabel nameLabel, passLabel;
 	JTextField nameField, passField;
 	JButton login;
+	
 	private LoginPanel() {
 		setLayout(new VerticalLayout(0,
 				VerticalLayout.CENTER, VerticalLayout.CENTER));
@@ -58,16 +59,12 @@ public class LoginPanel extends JPanel {
 		passField.addKeyListener(new KeyListener() {
 
 			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-
+			public void keyTyped(KeyEvent e) {}
 			@Override
-			public void keyReleased(KeyEvent e) {
-			}
+			public void keyReleased(KeyEvent e) {}
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					login.doClick();
 				}
@@ -89,44 +86,7 @@ public class LoginPanel extends JPanel {
 				parentPanel.add(waitPanel);
 				parentPanel.validate();
 
-				Thread showDnldPanel = new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						try {
-							downloadPanel = new DownloadPanel(
-									nameField.getText(), passField.getText());
-							parentPanel.removeAll();
-							parentPanel.add(downloadPanel);
-							parentPanel.validate();
-							parentPanel.repaint();
-						} catch (VKException e) {
-							try {
-								Sequencer player = MidiSystem.getSequencer();
-								player.open();
-								Sequence seq = new Sequence(Sequence.PPQ, 4);
-								Track track = seq.createTrack();
-								ShortMessage a = new ShortMessage();
-								a.setMessage(144, 1, 44, 100);
-								MidiEvent noteOn = new MidiEvent(a, 1);
-								track.add(noteOn);
-								player.setSequence(seq);
-								player.start();
-								//This might be dangerous
-								JOptionPane.showMessageDialog(null,
-										e.getMessage());
-								parentPanel.removeAll();
-								parentPanel.add(LoginPanel.this);
-								parentPanel.validate();
-								parentPanel.repaint();
-							} catch (Exception ex) {
-								ex.printStackTrace();
-							}
-						} catch (IOException e) {
-						}
-					}
-				});
-				showDnldPanel.start();
+				showDownloadPanel();
 			}
 		});
 		GUITools.makeSameSize(new JComponent[] { nameLabel, passLabel });
@@ -146,6 +106,47 @@ public class LoginPanel extends JPanel {
 		add(passPanel);
 		add(login);
 		GUITools.makeTransparent(new JPanel[] {this, namePanel, passPanel });
+	}
+	
+	private void showDownloadPanel(){
+		Thread showDnldPanel = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					downloadPanel = new DownloadPanel(
+							nameField.getText(), passField.getText());
+					parentPanel.removeAll();
+					parentPanel.add(downloadPanel);
+					parentPanel.validate();
+					parentPanel.repaint();
+				} catch (VKException e) {
+					try {
+						Sequencer player = MidiSystem.getSequencer();
+						player.open();
+						Sequence seq = new Sequence(Sequence.PPQ, 4);
+						Track track = seq.createTrack();
+						ShortMessage a = new ShortMessage();
+						a.setMessage(144, 1, 44, 100);
+						MidiEvent noteOn = new MidiEvent(a, 1);
+						track.add(noteOn);
+						player.setSequence(seq);
+						player.start();
+						//This might be dangerous
+						JOptionPane.showMessageDialog(null,
+								e.getMessage());
+						parentPanel.removeAll();
+						parentPanel.add(LoginPanel.this);
+						parentPanel.validate();
+						parentPanel.repaint();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				} catch (IOException e) {
+				}
+			}
+		});
+		showDnldPanel.start();
 	}
 	public static LoginPanel getLoginPanel(){
 		if (loginPanel==null){

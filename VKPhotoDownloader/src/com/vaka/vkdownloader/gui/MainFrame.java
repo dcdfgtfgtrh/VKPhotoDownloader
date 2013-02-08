@@ -81,6 +81,7 @@ public class MainFrame extends JFrame {
 				BorderFactory.createEmptyBorder(30, 50, 20, 50)));
 		getContentPane().add(headerPanel, BorderLayout.NORTH);
 		getContentPane().add(backgroundPanel);
+		
 		FrameDragger dragger = new FrameDragger(this);
 		headerPanel.addMouseListener(dragger);
 		headerPanel.addMouseMotionListener(dragger);
