@@ -77,5 +77,7 @@ public class TopPanel extends TexturedPanel {
 		add(minimize);
 		add(Box.createHorizontalStrut(5));
 		add(exit);
+		
+		
 	}
 }

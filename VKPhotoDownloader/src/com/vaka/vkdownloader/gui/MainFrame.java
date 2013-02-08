@@ -57,27 +57,15 @@ import crypt.CryptManager;
 
 
 public class MainFrame extends JFrame {
-	JPanel backgroundPanel, headerPanel, mainPanel, loginPanel, downloadPanel,
-			waitPanel, logoutAndCheckPanel, pathPanel;
-	JPanel loginFlowPanel;
-	JScrollPane albumsPane;
-	JLabel nameLabel, passLabel, pathLabel;
-	JTextField nameField, passField, pathField;
-	JButton login, logout, checkAll, uncheckAll, path, download;
-	Utils manager;
-	File pathFile;
-	LinkedList<Album> albumIcons;
-	Dimension preferredSize;
-
+	JPanel backgroundPanel, headerPanel, loginPanel;
 	public MainFrame() throws IOException {
 		super();
 		SplashScreen splash = new SplashScreen(getToolkit().createImage(
 				CryptManager.decodeResource("img/splash.res")), 400, 500);
 		setIconImage(getToolkit().createImage(
 				CryptManager.decodeResource("img/VK.res")));
-		manager = new Utils();
 
-		loginPanel = new LoginPanel();
+		loginPanel = LoginPanel.getLoginPanel();
 		headerPanel = new TopPanel(getToolkit().createImage(
 				CryptManager.decodeResource("img/TopTexture.res")), 30, 30);
 		
@@ -113,8 +101,6 @@ public class MainFrame extends JFrame {
 		try {
 			new MainFrame();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// System.exit(0);
 			e.printStackTrace();
 		}
 	}

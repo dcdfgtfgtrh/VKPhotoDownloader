@@ -38,18 +38,13 @@ import com.vaka.vkdownloader.utils.Utils;
 import crypt.CryptManager;
 
 public class DownloadPanel extends JPanel {
-	JPanel backgroundPanel, headerPanel, mainPanel, loginPanel, downloadPanel,
-			waitPanel, logoutAndCheckPanel, pathPanel;
-	JPanel loginFlowPanel;
+	JPanel backgroundPanel, loginPanel, logoutAndCheckPanel, pathPanel;
 	JScrollPane albumsPane;
-	JLabel nameLabel, passLabel, pathLabel;
-	JTextField nameField, passField, pathField;
-	JButton login, logout, checkAll, uncheckAll, path, download;
-	Utils manager;
+	JLabel pathLabel;
+	JTextField pathField;
+	JButton logout, checkAll, uncheckAll, path, download;
 	File pathFile;
 	LinkedList<Album> albumIcons;
-	Dimension preferredSize;
-
 	public DownloadPanel(String login, String pass) throws IOException,
 			VKException {
 		super();
@@ -71,8 +66,10 @@ public class DownloadPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Utils.doLogout();
+				
+				backgroundPanel= (JPanel) getParent();
 				backgroundPanel.removeAll();
-				backgroundPanel.add(loginPanel);
+				backgroundPanel.add(LoginPanel.getLoginPanel());
 				backgroundPanel.validate();
 				backgroundPanel.repaint();
 			}

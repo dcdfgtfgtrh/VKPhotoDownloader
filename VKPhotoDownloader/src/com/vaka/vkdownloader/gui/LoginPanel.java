@@ -37,19 +37,13 @@ import crypt.CryptManager;
 
 public class LoginPanel extends JPanel {
 
-	JPanel parentPanel, headerPanel, mainPanel, loginPanel, downloadPanel,
-			waitPanel, logoutAndCheckPanel, pathPanel;
-	JPanel loginFlowPanel;
-	JScrollPane albumsPane;
-	JLabel nameLabel, passLabel, pathLabel;
-	JTextField nameField, passField, pathField;
-	JButton login, logout, checkAll, uncheckAll, path, download;
-	Utils manager;
-	File pathFile;
-	LinkedList<Album> albumIcons;
-	Dimension preferredSize;
-
-	public LoginPanel() {
+	private static LoginPanel loginPanel;
+	JPanel parentPanel, downloadPanel,
+			waitPanel;
+	JLabel nameLabel, passLabel;
+	JTextField nameField, passField;
+	JButton login;
+	private LoginPanel() {
 		setLayout(new VerticalLayout(0,
 				VerticalLayout.CENTER, VerticalLayout.CENTER));
 		parentPanel=(JPanel) getParent();
@@ -152,5 +146,11 @@ public class LoginPanel extends JPanel {
 		add(passPanel);
 		add(login);
 		GUITools.makeTransparent(new JPanel[] {this, namePanel, passPanel });
+	}
+	public static LoginPanel getLoginPanel(){
+		if (loginPanel==null){
+			loginPanel=new LoginPanel();
+		}
+		return loginPanel;
 	}
 }
