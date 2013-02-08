@@ -148,13 +148,20 @@ public class VKApi {
 		return new JSONObject(converHttpEntityToString(response.getEntity()));
 	}
 	
-	private String converHttpEntityToString(HttpEntity ent) throws IOException{
-		BufferedInputStream bis = new BufferedInputStream(ent.getContent());
-		byte[] buffer = new byte[1024];
-		int count;
+	private String converHttpEntityToString(HttpEntity ent) {
+		BufferedInputStream bis;
 		StringBuilder sb = new StringBuilder();
-		while ((count = bis.read(buffer)) != -1) {
-			sb.append(new String(buffer, 0, count, "utf-8"));
+		try {
+			bis = new BufferedInputStream(ent.getContent());
+			byte[] buffer = new byte[1024];
+			int count;
+			while ((count = bis.read(buffer)) != -1) {
+				sb.append(new String(buffer, 0, count, "utf-8"));
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return sb.toString();
 	}
