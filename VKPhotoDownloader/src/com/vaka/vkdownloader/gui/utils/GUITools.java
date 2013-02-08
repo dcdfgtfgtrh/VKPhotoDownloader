@@ -1,6 +1,7 @@
 package com.vaka.vkdownloader.gui.utils;
 
 import javax.swing.*;
+
 import java.awt.*;
 
 public class GUITools {
@@ -57,5 +58,17 @@ public class GUITools {
 				maxPos = i;
 		}
 		return maxPos;
+	}
+
+	public static void makeTransparent(JPanel[] panels) {
+		for (JPanel panel : panels) {
+			panel.setOpaque(false);
+		}
+	}
+
+	public static void setPreferredWidth(JComponent comp, int width) {
+		Dimension preferredSize = comp.getPreferredSize();
+		preferredSize.width = width;
+		comp.setPreferredSize(preferredSize);
 	}
 }
