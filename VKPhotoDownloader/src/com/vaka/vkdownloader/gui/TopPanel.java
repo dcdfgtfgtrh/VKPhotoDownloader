@@ -29,7 +29,7 @@ public class TopPanel extends TexturedPanel {
 				BorderFactory.createMatteBorder(2, 2, 0, 2, Utils.blue),
 				BorderFactory.createEmptyBorder(7, 7, 7, 7)));
 		
-		JLabel VKName = new JLabel("VK Photo Downloader beta4");
+		JLabel VKName = new JLabel("VK Photo Downloader");
 		VKName.setForeground(Color.WHITE);
 		VKName.setFont(new Font("Font", Font.BOLD, 20));
 		

@@ -1,6 +1,7 @@
 package com.vaka.vkdownloader.gui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,13 @@ public class SavePhotosThread extends Thread {
 						}
 					}
 				}
-				Utils.savePhotosToDrive(pathFile, map);		
+				//TODO: make proper try-catch
+				try {
+					Utils.savePhotosToDrive(pathFile, map);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}		
 			}
 		});
 	}

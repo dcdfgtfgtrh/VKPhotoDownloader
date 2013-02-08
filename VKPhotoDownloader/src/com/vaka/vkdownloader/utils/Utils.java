@@ -22,6 +22,7 @@ import com.vaka.vkapi.VKAlbum;
 import com.vaka.vkapi.VKApi;
 import com.vaka.vkapi.VKException;
 import com.vaka.vkapi.VKPhoto;
+import com.vaka.vkdownloader.gui.ProgressFrame;
 
 
 public class Utils {
@@ -49,16 +50,8 @@ public class Utils {
 	 * Separate GUI code!
 	 */
 	public static void savePhotosToDrive(File dir,
-			Map<VKAlbum, List<VKPhoto>> map) {
-		JFrame frame = new JFrame("Сохраняю...");
-		JLabel label = new JLabel("Логин успешен!");
-		frame.add(label);
-		
-		frame.setLocation(frame.getToolkit().getScreenSize().width / 2, frame
-				.getToolkit().getScreenSize().height / 2);
-		frame.setSize(new Dimension(200, 100));
-		frame.setVisible(true);
-		
+			Map<VKAlbum, List<VKPhoto>> map) throws IOException {
+		ProgressFrame frame = new ProgressFrame(getTotalPhotos(map));
 		for (VKAlbum album : map.keySet()) {
 			List<VKPhoto> photos = map.get(album);
 			File albumDir = new File(dir.getPath() + "/"
@@ -68,21 +61,25 @@ public class Utils {
 			for (VKPhoto photo : photos) {
 				File file = new File(albumDir.getPath() + "/" + "photo_"
 						+ photo.pid + ".jpg");
+				
 				if (file.exists()) {
-					System.out.println("Skipping: " + file.toString());
+					frame.next();
+					try{
+						Thread.sleep(10);
+					}catch (InterruptedException e){}
 					continue;
 				}
+				
 				String photoURL;
-				URL url = null;
 				if (photo.src_xxbig != null) {
 					photoURL = photo.src_xxbig;
 				} else {
 					photoURL = photo.src_big;
 				}
+				
 				try {
-					label.setText("Сохраняю фото" + photos.indexOf(photo)
-							+ " из " + photos.size());
-					url = new URL(photoURL);
+					frame.next();
+					URL url = new URL(photoURL);
 					InputStream is = url.openStream();
 					OutputStream os = new FileOutputStream(file);
 					byte[] b = new byte[1024];
@@ -110,5 +107,14 @@ public class Utils {
 			str = str.replace(c, ' ');
 		}
 		return str;
+	}
+	
+	private static int getTotalPhotos(Map<VKAlbum, List<VKPhoto>> map) {
+		int count = 0;
+		for (VKAlbum album : map.keySet()) {
+			List<VKPhoto> photos = map.get(album);
+			count+=photos.size();
+		}
+		return count;
 	}
 }
