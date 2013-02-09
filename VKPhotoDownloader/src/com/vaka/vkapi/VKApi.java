@@ -141,10 +141,9 @@ public class VKApi {
 	public JSONObject executeApiMethod(String method, String args) throws JSONException,
 			IOException {
 		HttpClient client = new DefaultHttpClient();
-		// POST | GET as described in api
-		HttpGet get = new HttpGet(apiURI + method + args + "&access_token="
+		HttpPost post = new HttpPost(apiURI + method + args + "&access_token="
 				+ ACCES_TOKEN);
-		response = client.execute(get);
+		response = client.execute(post);
 		return new JSONObject(converHttpEntityToString(response.getEntity()));
 	}
 	
